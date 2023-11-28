@@ -67,7 +67,7 @@ def get_absolute_media_url(trailing_slash=True):
     if not trailing_slash:
         url = url.rstrip('/')
 
-    return 
+    return url
 
     
 def get_absolute_static_url(trailing_slash=True):
