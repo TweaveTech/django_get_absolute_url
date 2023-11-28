@@ -2,7 +2,7 @@ from django.conf import settings
 from django.urls import reverse_lazy
 import socket
 
-def schema():
+def get_schema():
     try:
         if settings.HTTPS_SUPPORTED:
             schema = 'https'
@@ -14,7 +14,7 @@ def schema():
     return schema
 
 
-def fqdn():
+def get_fqdn():
     hostname = socket.getfqdn()
 
     if settings.DEBUG:
@@ -40,8 +40,8 @@ def generate_absolute_url(trailing_slash=True, reverse_url_string=None):
     the local hostname detected by socket.getfqdn()
 
     '''
-    schema = schema()
-    hostname = fqdn()
+    schema = get_schema()
+    hostname = get_fqdn()
 
     url = f"{schema}://{hostname}"
 
@@ -62,7 +62,12 @@ def get_absolute_media_url(trailing_slash=True):
     url = generate_absolute_url(trailing_slash=True)
     media_uri = settings.MEDIA_URL
 
-    return url + media_uri
+    url = url + media_uri
+
+    if not trailing_slash:
+        url = url.rstrip('/')
+
+    return 
 
     
 def get_absolute_static_url(trailing_slash=True):
@@ -71,6 +76,9 @@ def get_absolute_static_url(trailing_slash=True):
     """
     url = generate_absolute_url(trailing_slash=True)
     media_uri = settings.STATIC_URL
+
+    if not trailing_slash:
+        url = url.rstrip('/')
 
     return url + media_uri
 
