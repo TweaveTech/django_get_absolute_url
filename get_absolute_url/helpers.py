@@ -2,6 +2,32 @@ from django.conf import settings
 from django.urls import reverse_lazy
 import socket
 
+def schema():
+    try:
+        if settings.HTTPS_SUPPORTED:
+            schema = 'https'
+        else:
+            schema = 'http'
+    except AttributeError:
+        schema = 'http'
+
+    return schema
+
+
+def fqdn():
+    hostname = socket.getfqdn()
+
+    if settings.DEBUG:
+        try:
+            if settings.LOCAL_HOST:
+                hostname = settings.LOCAL_HOST
+            else:
+                raise AttributeError
+        except AttributeError:
+            hostname = socket.getfqdn()
+
+    return hostname
+
 
 def generate_absolute_url(trailing_slash=True, reverse_url_string=None):
     '''
@@ -14,24 +40,8 @@ def generate_absolute_url(trailing_slash=True, reverse_url_string=None):
     the local hostname detected by socket.getfqdn()
 
     '''
-    try:
-        if settings.HTTPS_SUPPORTED:
-            schema = 'https'
-        else:
-            schema = 'http'
-    except AttributeError:
-        schema = 'http'
-
-    hostname = socket.getfqdn()
-
-    if settings.DEBUG:
-        try:
-            if settings.LOCAL_HOST:
-                hostname = settings.LOCAL_HOST
-            else:
-                raise AttributeError
-        except AttributeError:
-            hostname = socket.getfqdn()
+    schema = schema()
+    hostname = fqdn()
 
     url = f"{schema}://{hostname}"
 
@@ -43,5 +53,25 @@ def generate_absolute_url(trailing_slash=True, reverse_url_string=None):
         return url.rstrip('/') + uri
 
     return url
+
+
+def get_absolute_media_url(trailing_slash=True):
+    """
+    Return a complete media url
+    """
+    url = generate_absolute_url(trailing_slash=False)
+    media_uri = settings.MEDIA_URL
+
+    return url + media_uri
+
+    
+def get_absolute_static_url(trailing_slash=True):
+    """
+    Return a complete media url
+    """
+    url = generate_absolute_url(trailing_slash=False)
+    media_uri = settings.STATIC_URL
+
+    return url + media_uri
 
     
