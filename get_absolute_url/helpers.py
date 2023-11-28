@@ -59,7 +59,7 @@ def get_absolute_media_url(trailing_slash=True):
     """
     Return a complete media url
     """
-    url = generate_absolute_url(trailing_slash=True)
+    url = generate_absolute_url(trailing_slash=False)
     media_uri = settings.MEDIA_URL
 
     url = url + media_uri
@@ -74,7 +74,7 @@ def get_absolute_static_url(trailing_slash=True):
     """
     Return a complete media url
     """
-    url = generate_absolute_url(trailing_slash=True)
+    url = generate_absolute_url(trailing_slash=False)
     media_uri = settings.STATIC_URL
 
     if not trailing_slash:
