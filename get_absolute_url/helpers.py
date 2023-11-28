@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.urls import reverse_url
+from django.urls import reverse_lazy
 import socket
 
 
@@ -39,7 +39,7 @@ def generate_absolute_url(trailing_slash=True, reverse_url_string=None):
         url = url + '/'
 
     if reverse_url_string:
-        uri = reverse_url(reverse_url_string)
+        uri = reverse_lazy(reverse_url_string)
         return url.rstrip('/') + uri
 
     return url
