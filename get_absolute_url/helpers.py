@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy as django_reverse_lazy
 import socket
 
 def get_schema():
@@ -49,7 +49,7 @@ def generate_absolute_url(trailing_slash=True, reverse_url_string=None):
         url = url + '/'
 
     if reverse_url_string:
-        uri = reverse_lazy(reverse_url_string)
+        uri = django_reverse_lazy(reverse_url_string)
         return url.rstrip('/') + uri
 
     return url
@@ -81,5 +81,28 @@ def get_absolute_static_url(trailing_slash=True):
         url = url.rstrip('/')
 
     return url + media_uri
+
+
+
+def reverse_lazy(viewname, urlconf=None, args=None, kwargs=None, current_app=None):
+    '''
+    Return a complete URL for the server. Usefuel when you need links 
+    in emails, sms, telegram or whatsapp messages.
+
+    There are 2 settings needed in your settings.
+    - HTTPS_SUPPORTED (boolean) -> Will ensure the url starts with the correct schema.
+    - LOCAL_HOST(hostname/ip) -> Will be used if present and debug is active to override
+    the local hostname detected by socket.getfqdn()
+
+    '''
+    base_url = generate_absolute_url(trailing_slash=False)
+    uri = reverse_lazy(viewname, urlconf=urlconf, args=args, kwargs=kwargs,
+        current_app=current_app)
+
+    return url + uri
+
+
+
+
 
     
