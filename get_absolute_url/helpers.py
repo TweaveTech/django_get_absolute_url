@@ -17,14 +17,11 @@ def get_schema():
 def get_fqdn():
     hostname = socket.getfqdn()
 
-    if settings.DEBUG:
-        try:
-            if settings.LOCAL_HOST:
-                hostname = settings.LOCAL_HOST
-            else:
-                raise AttributeError
-        except AttributeError:
-            hostname = socket.getfqdn()
+    try:
+        if settings.DEBUG and settings.LOCAL_HOST:
+            hostname = settings.LOCAL_HOST
+    except AttributeError:
+        pass
 
     return hostname
 
@@ -96,10 +93,10 @@ def reverse_lazy(viewname, urlconf=None, args=None, kwargs=None, current_app=Non
 
     '''
     base_url = generate_absolute_url(trailing_slash=False)
-    uri = reverse_lazy(viewname, urlconf=urlconf, args=args, kwargs=kwargs,
+    uri = django_reverse_lazy(viewname, urlconf=urlconf, args=args, kwargs=kwargs,
         current_app=current_app)
 
-    return url + uri
+    return base_url + uri
 
 
 
